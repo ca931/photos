@@ -41,23 +41,22 @@
         }
         
         #gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 8px;
+            margin: 0 auto;
         }
         
         .gallery-item {
+            width: calc(50% - 4px);
+            margin-bottom: 8px;
             position: relative;
             overflow: hidden;
-            aspect-ratio: 1;
             background: #151515;
             cursor: pointer;
         }
         
         .gallery-item img {
+            display: block;
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            height: auto;
             opacity: 0;
             transition: opacity 0.6s ease, transform 0.4s ease;
         }
@@ -129,20 +128,20 @@
         }
         
         /* Responsive adjustments */
-        @media (max-width: 768px) {
-            #gallery {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: 4px;
+        @media (max-width: 600px) {
+            .gallery-item {
+                width: 100%;
+                margin-bottom: 8px;
             }
             
             .gallery-container {
-                padding: 4px;
+                padding: 8px;
             }
         }
         
-        @media (min-width: 1400px) {
-            #gallery {
-                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        @media (min-width: 1600px) {
+            .gallery-item {
+                width: calc(33.333% - 6px);
             }
         }
     </style>
@@ -160,6 +159,10 @@
     <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.2/lightgallery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.2/plugins/zoom/lg-zoom.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lightgallery@2.7.2/plugins/thumbnail/lg-thumbnail.min.js"></script>
+    
+    <!-- Masonry + imagesLoaded -->
+    <script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/imagesloaded@5.0.0/imagesloaded.pkgd.min.js"></script>
     
     <script>
         // Image list
@@ -188,6 +191,19 @@
             
             item.appendChild(imgEl);
             gallery.appendChild(item);
+        });
+        
+        // Initialize Masonry
+        const msnry = new Masonry(gallery, {
+            itemSelector: '.gallery-item',
+            columnWidth: '.gallery-item',
+            percentPosition: true,
+            gutter: 8
+        });
+        
+        // Layout Masonry after each image loads
+        imagesLoaded(gallery).on('progress', () => {
+            msnry.layout();
         });
         
         // Initialize Lightgallery
